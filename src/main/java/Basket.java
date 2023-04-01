@@ -1,10 +1,11 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Basket implements Serializable {
-    private static final long serialVersionUID = 2710503002135L;
-
+public class Basket {
     private String[] products;
     private int[] prices;
     private int[] countProduct;
@@ -48,12 +49,22 @@ public class Basket implements Serializable {
         }
     }
 
-    public void saveTxt(File textFile) throws IOException {
+    public void saveTxt(File textFile) {
         try (BufferedWriter outBuffer = new BufferedWriter(new FileWriter(textFile))) {
             for (int i = 0; i < products.length; i++) {
                 outBuffer.write(products[i] + ";" + prices[i] + ";" + countProduct[i]);
                 outBuffer.newLine();
             }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void saveJson(File jsonFile) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        try (BufferedWriter wr = new BufferedWriter(new FileWriter(jsonFile))) {
+            wr.write(gson.toJson(this));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -84,21 +95,15 @@ public class Basket implements Serializable {
         return basket;
     }
 
-    public void saveBin(File file) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
-            out.writeObject(this);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static Basket loadFromBinFile(File file) {
+    public static Basket loadFromJson(File jsonFile) {
         Basket basket = null;
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
-            basket = (Basket) in.readObject();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        try (BufferedReader rd = new BufferedReader(new FileReader(jsonFile))) {
+            basket = gson.fromJson(rd, Basket.class);
             System.out.println("У вас уже есть список покупок");
             basket.printCart();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return basket;

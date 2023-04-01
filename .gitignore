@@ -29,8 +29,7 @@ bin/
 .DS_Store
 
 .txt
-basket.txt
-basket.bin
+
 
 # игнорируем файлы идеи
 *.iml
