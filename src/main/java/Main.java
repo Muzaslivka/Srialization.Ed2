@@ -27,9 +27,9 @@ public class Main {
         ClientLog clientLog = new ClientLog();
 
         if (!fiLeLog.exists() || isEmptyFile(fiLeLog)) {
-            try (CSVWriter wr = new CSVWriter(new FileWriter(fiLeLog))){
+            try (CSVWriter wr = new CSVWriter(new FileWriter(fiLeLog))) {
                 wr.writeNext(new String[]{"productNum", "amount"});
-            } catch (IOException e){
+            } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         }
