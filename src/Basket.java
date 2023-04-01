@@ -2,7 +2,9 @@ import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Basket {
+public class Basket implements Serializable {
+    private static final long serialVersionUID = 2710503002135L;
+
     private String[] products;
     private int[] prices;
     private int[] countProduct;
@@ -57,7 +59,7 @@ public class Basket {
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws IOException {
+    public static Basket loadFromTxtFile(File textFile) {
         Basket basket = null;
         try (BufferedReader inBuffer = new BufferedReader(new FileReader(textFile))) {
             List<String> fileInfo = inBuffer.lines().collect(Collectors.toList());
@@ -77,6 +79,26 @@ public class Basket {
             System.out.println("У вас уже есть список покупок");
             basket.printCart();
         } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        return basket;
+    }
+
+    public void saveBin(File file) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+            out.writeObject(this);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static Basket loadFromBinFile(File file) {
+        Basket basket = null;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+            basket = (Basket) in.readObject();
+            System.out.println("У вас уже есть список покупок");
+            basket.printCart();
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
         return basket;

@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static boolean isEmptyFile(File textFile) throws IOException {
-        try (BufferedReader inBuffer = new BufferedReader(new FileReader(textFile))) {
+    public static boolean isEmptyFile(File file) {
+        try (BufferedReader inBuffer = new BufferedReader(new FileReader(file))) {
             return inBuffer.readLine() == null;
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -20,11 +20,12 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         File fileBasket = new File("basket.txt");
+        File fileBasketBin = new File("basket.bin");
         Basket basket;
 
-        if (fileBasket.canRead() && !isEmptyFile(fileBasket)) {
+        if (fileBasketBin.canRead() && !isEmptyFile(fileBasketBin)) {
             try {
-                basket = Basket.loadFromTxtFile(fileBasket);
+                basket = Basket.loadFromBinFile(fileBasketBin);
             } catch (Exception e) {
                 System.out.println("Неверный формат файла " + fileBasket.getName() + ". Будет создана пустая корзина");
                 basket = new Basket(products, prices);
@@ -68,9 +69,10 @@ public class Main {
                         System.out.println("Введено отрицательное количество. Попробуйте еще раз");
                     } else {
                         basket.addToCart(numberProduct, count);
-                        basket.saveTxt(fileBasket);
+                        basket.saveBin(fileBasketBin);
                     }
                 }
+
             }
         }
     }
