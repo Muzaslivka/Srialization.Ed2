@@ -3,27 +3,23 @@ import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientLog {
-    private int productNum;
-    private int amount;
+    private List<String> logList = new ArrayList<>();
+
 
     public void log(int productNum, int amount) {
-        this.productNum = productNum;
-        this.amount = amount;
-
+        logList.add(productNum + "," + amount);
     }
 
     public void exportAsCSV(File txtFile) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(txtFile, true))) {
-            writer.writeNext(this.toString().split(","));
+        try (CSVWriter writer = new CSVWriter(new FileWriter(txtFile))) {
+            writer.writeNext(new String[]{"productNum", "amount"});
+            logList.stream().map(s -> s.split(",")).forEach(writer::writeNext);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    @Override
-    public String toString() {
-        return productNum + "," + amount;
     }
 }
